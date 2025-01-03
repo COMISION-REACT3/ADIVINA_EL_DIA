@@ -52,13 +52,18 @@ img{
     font-weight: 500;
 }
 
-#play-again-btn{
-    background-color: #fff;
-    margin-top: 1rem;
-    padding: 0.65rem 0.8rem;
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.2rem;
+#play-again-btn {
+    background-color: #ac4104;
+    color: #fff;
     border: none;
+    padding: 0.8rem 1rem;
+    border-radius: 5px;
     cursor: pointer;
-    font-weight: 500;
-}
+    transition: background-color 0.3s ease;
+    font-weight: bolder;
+  }
+  
+  #play-again-btn:hover {
+    background-color: #ee6c38;
+  }
+  

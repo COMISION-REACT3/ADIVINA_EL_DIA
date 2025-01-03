@@ -1,43 +1,51 @@
-const messageDiv = document.getElementById('message');
-const daysOfTheWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const resultText = document.getElementById('result');
-// random day of the week
-let randomDay = daysOfTheWeek[Math.floor(Math.random() * 7) + 1];
-// console.log(randomDay);
+const messageDiv = document.getElementById("message");
+const resultText = document.getElementById("result");
+const daysOfTheWeek = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"];
 
-// speech recognition init
+// Día aleatorio
+let randomDay = daysOfTheWeek[Math.floor(Math.random() * 7)];
+console.log("Día aleatorio:", randomDay); // Para depuración
+
+// Inicializar SpeechRecognition
 window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recog = new window.SpeechRecognition();
+const recog = new window.SpeechRecognition();
+recog.lang = "es-ES"; // Configurar idioma a español
 
 recog.start();
-recog.addEventListener('result', getUserSpeech);
-recog.addEventListener('end', () => recog.start());
 
-// getting users speech
-function getUserSpeech(e){
-    // console.log(e.results[0][0].transcript);
-    let message = e.results[0][0].transcript;
-    showMessage(message);
+// Listeners
+recog.addEventListener("result", (e) => {
+  const userSpeech = e.results[0][0].transcript.trim().toLowerCase();
+  showMessage(userSpeech);
+});
+recog.addEventListener("end", () => recog.start());
+
+// Mostrar mensaje del usuario
+function showMessage(message) {
+  messageDiv.innerHTML = `<div> Dijiste: ${message} </div>`;
+  checkDaysOfTheWeek(message);
 }
 
-//showing user's speech
-function showMessage(message){
-    messageDiv.innerHTML = `<div> You said: ${message} </div>`;
-    checkDaysOfTheWeek(message);
+// Verificar la respuesta
+function checkDaysOfTheWeek(message) {
+  if (message === randomDay) {
+    resultText.innerHTML = `
+      <span style="color: #00F700;">¡Adivinaste! El día era: ${randomDay}.</span>
+      <br>
+      <button id="play-again-btn">Intenta nuevamente</button>`;
+    recog.abort(); // Detener reconocimiento de voz
+  } else {
+    resultText.innerHTML = `<span style="color: #F54A19;">Oops! Incorrecto. Intenta otra vez.</span>`;
+  }
 }
 
- // checking the guess
- function checkDaysOfTheWeek(message){
-     if(randomDay == message){
-         resultText.innerHTML = `<span style = "color: #00F700;"> Your guess is correct! </span> <br> <button id = "play-again-btn"> Play Again </button>`;
-         recog.addEventListener('end', () => recog.abort());
-     } else {
-         resultText.innerHTML = `<span style = "color: #F54A19;"> Oops! Your guess is incorrect! Try Again. </span>`;
-     }
- }
-
- // restarting the guessing game
- document.body.addEventListener('click', (e) => {
-     if(e.target.id == 'play-again-btn') window.location.reload();
- });
+// Reiniciar el juego
+document.body.addEventListener("click", (e) => {
+  if (e.target.id === "play-again-btn") {
+    randomDay = daysOfTheWeek[Math.floor(Math.random() * 7)];
+    resultText.innerHTML = "";
+    messageDiv.innerHTML = "";
+    recog.start();
+  }
+});
 
